@@ -1,3 +1,8 @@
+package Managers;
+
+import Tasks.*;
+import Enums.*;
+
 import java.util.*;
 
 public class Manager {
@@ -16,8 +21,8 @@ public class Manager {
         return task;
     }
 
-    public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
+    public List<Task> getAllTasks() {
+        List<Task> tasks = new ArrayList<>();
         for (Task task : taskById.values()) {
             tasks.add(task);
         }
@@ -28,6 +33,7 @@ public class Manager {
         private int nextId = 0;
 
         public int getNextId() {
+
             return nextId++;
         }
     }
@@ -72,12 +78,12 @@ public class Manager {
         taskById.put(subtasks.getId(), subtasks);
     }
 
-    public ArrayList getEpicsSubs(int id) {
-        ArrayList<Subtask> subs = new ArrayList<>();
+    public List<Subtask> getEpicsSubs(int id) {
+        List<Subtask> subs = new ArrayList<>();
         for (Subtask e : subsHash.values()) {
-           if (id == e.getEpicId()) {
-               subs.add(e);
-           }
+            if (id == e.getEpicId()) {
+                subs.add(e);
+            }
         }
 
         return subs;
@@ -126,20 +132,32 @@ public class Manager {
         System.out.println("Все задачи удалены");
     }
 
-    public void removeById(int removeId) {
+    private void removeSinglesAndSub(int removeId) {
         if (taskById.containsKey(removeId)) {
             if ((!taskById.get(removeId).getType().equals(Type.EPIC))) {
                 taskById.remove(removeId);
-            } else if (taskById.get(removeId).getType().equals(Type.EPIC)) {
-                for (Epic e : epicHash.values()) {
-                    if (removeId == e.getId()) {
-                        for (int subs : e.getSubId()) {
-                            taskById.remove(subs);
-                        }
+            }
+        }
+    }
+
+    private void removeEpic(int removeId) {
+        if (taskById.containsKey(removeId)) {
+            for (Epic e : epicHash.values()) {
+                if (removeId == e.getId()) {
+                    for (int subs : e.getSubId()) {
+                        taskById.remove(subs);
                     }
                 }
-                taskById.remove(removeId);
             }
+            taskById.remove(removeId);
+        }
+    }
+
+    public void removeById(int removeId) {
+        if ((!taskById.get(removeId).getType().equals(Type.EPIC))) {
+            removeSinglesAndSub(removeId);
+        } else if (taskById.get(removeId).getType().equals(Type.EPIC)) {
+            removeEpic(removeId);
         }
     }
 }

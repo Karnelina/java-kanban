@@ -1,3 +1,5 @@
+package Tasks;
+import Enums.*;
 public class SingleTask extends Task {
     private Status status;
 
