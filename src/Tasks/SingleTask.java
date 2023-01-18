@@ -9,7 +9,7 @@ public class SingleTask extends Task {
     }
 
     public static class ToCreate {
-        private String goal;
+        private final String goal;
 
         public ToCreate(String goal) {
             this.goal = goal;

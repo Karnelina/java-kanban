@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Epic extends Task {
     private Status status;
-    private ArrayList<Integer> subId;
+    private final ArrayList<Integer> subId;
 
     public Epic(int id, String goal, Status status) {
         super(id, goal);
@@ -21,7 +21,7 @@ public class Epic extends Task {
     }
 
     public static class ToCreate {
-        private String goal;
+        private final String goal;
 
         public ToCreate(String goal) {
             this.goal = goal;

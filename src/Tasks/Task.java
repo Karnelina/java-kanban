@@ -3,7 +3,7 @@ import Enums.*;
 
 
 public abstract class Task {
-    private int id;
+    private final int id;
     private String goal;
 
     protected Task(int id, String goal) {

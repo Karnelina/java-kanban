@@ -1,10 +1,9 @@
 package Tasks;
 import Enums.*;
-import java.util.*;
 
 public class Subtask extends Task {
     private Status status;
-    private int epicId;
+    private final int epicId;
 
     public Subtask(int id, String goal, Status status, int epicId) {
         super(id, goal);

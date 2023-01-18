@@ -1,12 +1,10 @@
 import Tasks.*;
-import  Managers.*;
-
-//Надеюсь я правильно исправила удаление. 
+import DifferentManagers.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        TaskManager manager = Managers.getDefault();
         SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate("Pure safe task");
         manager.addTask(singleTaskToCreate);
 
@@ -41,13 +39,27 @@ public class Main {
         System.out.println(manager.getEpicsSubs(1)); // Получение сабов у определнного эпика
 
         System.out.println(manager.getTaskById(1)); //Получение любого таска по айди
+        System.out.println(manager.getTaskById(3)); // проверка на удаление, если больше 10 просмотров
+        System.out.println(manager.getTaskById(0));
+        System.out.println(manager.getTaskById(4));
+        System.out.println(manager.getTaskById(5));
+        System.out.println(manager.getTaskById(0));
+        System.out.println(manager.getTaskById(1));
+        System.out.println(manager.getTaskById(2));
+        System.out.println(manager.getTaskById(3));
+        System.out.println(manager.getTaskById(4));
+        System.out.println(manager.getTaskById(5));
+        System.out.println(manager.getTaskById(0));
+
+        manager.printHistory();
+
 
         manager.removeById(4); //удаление любого таска, если эпик, то вместе с сабами
 
         System.out.println(manager.getAllTasks());
 
-        manager.removeAll(); // Удаление всех тасков из мапы
 
+        manager.removeAll(); // Удаление всех тасков из мапы
 
 
     }
