@@ -1,5 +1,5 @@
 import Tasks.*;
-import DifferentManagers.*;
+import managers.*;
 
 public class Main {
 
