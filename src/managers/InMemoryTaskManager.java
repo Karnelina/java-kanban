@@ -2,6 +2,7 @@ package managers;
 
 import Tasks.*;
 import Enums.*;
+import managers.History.HistoryManager;
 
 import java.util.*;
 
@@ -141,6 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAll() {
         taskById.clear();
+        inMemoryHistoryManager.clear();
         System.out.println("Все задачи удалены");
     }
 
@@ -156,10 +158,12 @@ public class InMemoryTaskManager implements TaskManager {
                 if (removeId == e.getId()) {
                     for (int subs : e.getSubId()) {
                         taskById.remove(subs);
+                        inMemoryHistoryManager.remove(subs);
                     }
                 }
             }
             taskById.remove(removeId);
+            inMemoryHistoryManager.remove(removeId);
         }
     }
 
@@ -167,6 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeById(int removeId) {
         if ((!taskById.get(removeId).getType().equals(Type.EPIC))) {
             removeSinglesAndSub(removeId);
+            inMemoryHistoryManager.remove(removeId);
         } else if (taskById.get(removeId).getType().equals(Type.EPIC)) {
             removeEpic(removeId);
         }
@@ -177,4 +182,5 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("История: ");
         System.out.println(inMemoryHistoryManager.getHistory());
     }
+
 }

@@ -39,7 +39,7 @@ public class Main {
         System.out.println(manager.getEpicsSubs(1)); // Получение сабов у определнного эпика
 
         System.out.println(manager.getTaskById(1)); //Получение любого таска по айди
-        System.out.println(manager.getTaskById(3)); // проверка на удаление, если больше 10 просмотров
+        System.out.println(manager.getTaskById(3));
         System.out.println(manager.getTaskById(0));
         System.out.println(manager.getTaskById(4));
         System.out.println(manager.getTaskById(5));
@@ -51,16 +51,16 @@ public class Main {
         System.out.println(manager.getTaskById(5));
         System.out.println(manager.getTaskById(0));
 
-        manager.printHistory();
+        manager.printHistory(); // проверка, чтобы не было повторов
 
+        manager.removeById(1); //удаление любого таска, если эпик, то вместе с сабами.
 
-        manager.removeById(4); //удаление любого таска, если эпик, то вместе с сабами
+        manager.printHistory(); // Проверка удаления истории
 
         System.out.println(manager.getAllTasks());
 
-
         manager.removeAll(); // Удаление всех тасков из мапы
 
-
+        manager.printHistory();
     }
 }
