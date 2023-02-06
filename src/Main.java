@@ -1,8 +1,18 @@
+import Managers.TaskManager.TaskManager;
 import Tasks.*;
-import managers.*;
+import Managers.*;
 
 public class Main {
+/*
+в Node не понимю для чего нужно прописывать модификаторы доступа? Так как в оригинальным коде LinkedList они также стоят
+ без модификатора.И код Node взят оттуда. Вдобавок болльше нет упоминания понадобится ли класс Node еще где-то в будущем,
+ поэтому его использование на данный момент можно оставить только внутри пакета.
 
+ CustomLinkedList - сделала более абстрактным, теперь может принимать любые данные. Также не понимаю в 11 строчке
+ какой тип надо проставлять у Node при создании объекта? Или я не так поняла комментарий.
+  Тамже в 16 строчке не понимаю что не так с модификатором доступа. Если это относится к Node.
+
+ */
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
         SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate("Pure safe task");

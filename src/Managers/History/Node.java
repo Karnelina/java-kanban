@@ -1,4 +1,4 @@
-package managers.History;
+package Managers.History;
 
 public class Node<E> {
     E item;

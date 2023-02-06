@@ -1,8 +1,9 @@
-package managers;
+package Managers;
 
-import managers.History.CustomLinkedList;
-import managers.History.HistoryManager;
-import managers.History.InMemoryHistoryManager;
+import Managers.History.HistoryManager;
+import Managers.History.InMemoryHistoryManager;
+import Managers.TaskManager.TaskManager;
+import Managers.TaskManager.InMemoryTaskManager;
 
 public class Managers {
     public static TaskManager getDefault() {

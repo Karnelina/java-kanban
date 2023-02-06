@@ -2,6 +2,6 @@ package Enums;
 
 public enum Type {
     EPIC,
-    SUB,
+    SUBTASK,
     SINGLE
 }

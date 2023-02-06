@@ -1,8 +1,9 @@
-package managers;
+package Managers.TaskManager;
 
+import Managers.Managers;
 import Tasks.*;
 import Enums.*;
-import managers.History.HistoryManager;
+import Managers.History.HistoryManager;
 
 import java.util.*;
 
