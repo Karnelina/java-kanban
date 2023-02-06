@@ -41,7 +41,7 @@ public class Subtask extends Task {
 
     @Override
     public Type getType() {
-        return Type.SUB;
+        return Type.SUBTASK;
     }
 
     @Override

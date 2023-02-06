@@ -1,28 +1,30 @@
 package managers.History;
+
 import Tasks.*;
 
 import java.util.*;
 
-public class CustomLinkedList {
-    private Node<Task> first;
-    private Node<Task> last;
+public class CustomLinkedList<T> {
+    private Node<T> first;
+    private Node<T> last;
 
-    public Node<Task> linkLast (Task task) {
-        Node<Task> newNode = new Node<>(last, task, null);
+    public Node<T> linkLast(T elem) {
+        final Node<T> newNode = new Node<>(last, elem, null);
 
-        if(last == null) {
+        if (last == null) {
             first = newNode;
         } else {
             last.next = newNode;
         }
+
         last = newNode;
 
         return newNode;
     }
 
-    public List<Task> getTasks() {
-        List<Task> tasks =  new ArrayList<>();
-        Node<Task> elem = first;
+    public List<T> getTasks() {
+        List<T> tasks = new ArrayList<>();
+        Node<T> elem = first;
 
         while (elem != null) {
             tasks.add(elem.item);
@@ -32,7 +34,7 @@ public class CustomLinkedList {
         return tasks;
     }
 
-    public void removeNode(Node<Task> node) {
+    public void removeNode(Node<T> node) {
         if (node == null) {
             return;
         }
