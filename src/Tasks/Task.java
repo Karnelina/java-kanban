@@ -4,14 +4,16 @@ import Enums.*;
 
 public abstract class Task {
     private final int id;
-    private String goal;
+    private final String goal;
+    private final String description;
 
-    protected Task(int id, String goal) {
+    protected Task(int id, String goal, String description) {
         this.id = id;
         this.goal = goal;
+        this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
@@ -21,17 +23,12 @@ public abstract class Task {
         return goal;
     }
 
-    public void setGoal(String goal) {
-        if (goal != null) {
-            this.goal = goal;
-        }
+    public String getDescription() {
+        return description;
     }
 
     public abstract Status getStatus();
     public abstract void setStatus(Status status);
     public abstract Type getType();
     public abstract String toString();
-
-
-
 }

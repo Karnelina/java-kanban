@@ -3,21 +3,27 @@ import Enums.*;
 public class SingleTask extends Task {
     private Status status;
 
-    public SingleTask(int id, String goal, Status status) {
-        super(id, goal);
+    public SingleTask(int id, String goal, String description, Status status) {
+        super(id, goal, description);
         this.status = status;
     }
 
     public static class ToCreate {
         private final String goal;
+        private final String description;
 
-        public ToCreate(String goal) {
+        public ToCreate(String goal, String description) {
             this.goal = goal;
+            this.description = description;
         }
 
         public String getGoal() {
             return goal;
         }
+        public String getDescription() {
+            return description;
+        }
+
     }
 
     @Override
@@ -37,11 +43,11 @@ public class SingleTask extends Task {
 
     @Override
     public String toString() {
-        return "SingleTask{" +
-                " goal = " + getGoal() +
-                ", id = " + getId() +
-                ", status = '" + status + '\'' +
-                '}' + '\n';
+        return getId() + ","
+                + getType() + ","
+                + getGoal() + ","
+                + getStatus() + ","
+                + getDescription();
     }
 
 

@@ -6,8 +6,8 @@ public class Epic extends Task {
     private Status status;
     private final ArrayList<Integer> subId;
 
-    public Epic(int id, String goal, Status status) {
-        super(id, goal);
+    public Epic(int id, String goal, String description, Status status) {
+        super(id, goal, description);
         this.status = status;
         subId = new ArrayList<>();
     }
@@ -22,13 +22,18 @@ public class Epic extends Task {
 
     public static class ToCreate {
         private final String goal;
+        private final String description;
 
-        public ToCreate(String goal) {
+        public ToCreate(String goal, String description) {
             this.goal = goal;
+            this.description = description;
         }
 
         public String getGoalToEpic() {
             return goal;
+        }
+        public String getDescription() {
+            return description;
         }
     }
 
@@ -49,11 +54,11 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                " goal = " + getGoal() +
-                ", id = " + getId() +
-                ", status = '" + status + '\'' +
-                '}' + '\n';
+        return getId() + ","
+                + getType() + ","
+                + getGoal() + ","
+                + getStatus() + ","
+                + getDescription();
     }
 
 }

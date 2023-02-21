@@ -1,0 +1,9 @@
+id,type,name,status,description,epic
+0,SINGLE,SingleTask1,DONE,Make single
+1,EPIC,New Epic,IN_PROGRESS,Make epic
+2,SUBTASK,New sub1,DONE,Make sub 1,1
+3,SUBTASK,New sub2,NEW,Make sub 2,1
+4,EPIC,New Epic1,DONE,Make epic 1
+5,SUBTASK,New sub1,DONE,Make sub 1,4
+
+1,3,0,4,

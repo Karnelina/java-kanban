@@ -53,6 +53,7 @@ public class InMemoryTaskManager implements TaskManager {
         singleTask = new SingleTask(
                 id,
                 singleTaskToCreate.getGoal(),
+                singleTaskToCreate.getDescription(),
                 Status.NEW
         );
 
@@ -66,6 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic = new Epic(
                 id,
                 newEpic.getGoalToEpic(),
+                newEpic.getDescription(),
                 Status.NEW
         );
         epicHash.put(epic.getId(), epic);
@@ -79,6 +81,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks = new Subtask(
                 id,
                 subtask.getGoalToSub(),
+                subtask.getDescription(),
                 Status.NEW,
                 epic.getId()
         );

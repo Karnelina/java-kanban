@@ -1,30 +1,24 @@
 import Managers.TaskManager.TaskManager;
 import Tasks.*;
 import Managers.*;
-
-public class Main {
 /*
-в Node не понимю для чего нужно прописывать модификаторы доступа? Так как в оригинальным коде LinkedList они также стоят
- без модификатора.И код Node взят оттуда. Вдобавок болльше нет упоминания понадобится ли класс Node еще где-то в будущем,
- поэтому его использование на данный момент можно оставить только внутри пакета.
+public class Main {
 
- CustomLinkedList - сделала более абстрактным, теперь может принимать любые данные. Также не понимаю в 11 строчке
- какой тип надо проставлять у Node при создании объекта? Или я не так поняла комментарий.
-  Тамже в 16 строчке не понимаю что не так с модификатором доступа. Если это относится к Node.
+    Мейн пока перенесен в FileBackedTasksManager как было сказано в ТЗ!!!
 
- */
+
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
-        SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate("Pure safe task");
+        SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate("SingleTak1", "Make single");
         manager.addTask(singleTaskToCreate);
 
         System.out.println(manager.getAllTasks());
 
         manager.doneSingleTask(0);
 
-        Epic.ToCreate epic = new Epic.ToCreate("New Epic");
-        Subtask.ToCreate subtask1 = new Subtask.ToCreate("New sub1", epic);
-        Subtask.ToCreate subtask2 = new Subtask.ToCreate("New sub2", epic);
+        Epic.ToCreate epic = new Epic.ToCreate("New Epic", " ");
+        Subtask.ToCreate subtask1 = new Subtask.ToCreate("New sub1", " ", epic);
+        Subtask.ToCreate subtask2 = new Subtask.ToCreate("New sub2", " ", epic);
         manager.addTaskEpic(epic);
         manager.addTaskSub(subtask1);
         manager.addTaskSub(subtask2);
@@ -34,8 +28,8 @@ public class Main {
         manager.doneSub(2); // Завершение саба
         manager.doneEpic(); // Проверка на прогресс эпика
 
-        Epic.ToCreate epic1 = new Epic.ToCreate("New Epic1");
-        Subtask.ToCreate subtask3 = new Subtask.ToCreate("New sub1", epic1);
+        Epic.ToCreate epic1 = new Epic.ToCreate("New Epic1", " ");
+        Subtask.ToCreate subtask3 = new Subtask.ToCreate("New sub1", " ", epic1);
         manager.addTaskEpic(epic);
         manager.addTaskSub(subtask3);
 
@@ -74,3 +68,5 @@ public class Main {
         manager.printHistory();
     }
 }
+
+ */
