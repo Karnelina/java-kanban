@@ -1,6 +1,6 @@
-package Managers.History;
+package managers.history;
 
-import Tasks.*;
+import tasks.*;
 
 import java.util.List;
 

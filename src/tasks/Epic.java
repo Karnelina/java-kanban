@@ -1,23 +1,25 @@
-package Tasks;
-import Enums.*;
+package tasks;
+
+import enums.*;
+
 import java.util.*;
 
 public class Epic extends Task {
     private Status status;
-    private final ArrayList<Integer> subId;
+    private final ArrayList<Subtask> subs;
 
     public Epic(int id, String goal, String description, Status status) {
         super(id, goal, description);
         this.status = status;
-        subId = new ArrayList<>();
+        subs = new ArrayList<>();
     }
 
-    public ArrayList<Integer> getSubId() {
-        return subId;
+    public ArrayList<Subtask> getSubs() {
+        return subs;
     }
 
-    public void setSubId(int subId) {
-        this.subId.add(subId);
+    public void setSub(Subtask subs) {
+        this.subs.add(subs);
     }
 
     public static class ToCreate {
@@ -32,6 +34,7 @@ public class Epic extends Task {
         public String getGoalToEpic() {
             return goal;
         }
+
         public String getDescription() {
             return description;
         }
@@ -58,7 +61,29 @@ public class Epic extends Task {
                 + getType() + ","
                 + getGoal() + ","
                 + getStatus() + ","
-                + getDescription();
+                + getDescription() + ","
+                + getDuration() + ","
+                + getStartTime() + ","
+                + getFinishTime();
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Task task = (Task) obj;
+        if (obj == null && task.getType().equals(Type.SUBTASK)) {
+            return false;
+        }
+        return getId() == task.getId() &&
+                getType() == task.getType() &&
+                getGoal().equals(task.getGoal()) &&
+                getStatus() == task.getStatus() &&
+                getDescription().equals(task.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
     }
 
 }

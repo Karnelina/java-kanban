@@ -1,58 +1,19 @@
-package Managers.TaskManager;
-import Enums.Status;
-import Enums.Type;
-import Managers.Managers;
-import Tasks.*;
+package managers;
+import enums.Status;
+import enums.Type;
+import managers.exception.ManagerSaveException;
+import tasks.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
-import Managers.TaskManager.exception.ManagerSaveException;
 
-import static Tasks.SingleTask.*;
-/*
-Были трудности с loadFromFile, но надеюсь реализовано правильно. Вроде все работает как надо
- */
+import static tasks.SingleTask.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    private static final Path filePath = Path.of("src/resources/TaskHistory.csv");
-    public static HashMap<Integer, Task> loadedTasks = new HashMap<>();
-
-    public static void main(String[] args) {
-        TaskManager manager = Managers.getBackFileManager();
-
-        SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate("SingleTask1", "Make single");
-        manager.addTask(singleTaskToCreate);
-
-        manager.doneSingleTask(0);
-
-        Epic.ToCreate epic = new Epic.ToCreate("New Epic", "Make epic");
-        Subtask.ToCreate subtask1 = new Subtask.ToCreate("New sub1", "Make sub 1", epic);
-        Subtask.ToCreate subtask2 = new Subtask.ToCreate("New sub2", "Make sub 2", epic);
-        manager.addTaskEpic(epic);
-        manager.addTaskSub(subtask1);
-        manager.addTaskSub(subtask2);
-
-        manager.doneSub(2); // Завершение саба
-        manager.doneEpic(); // Проверка на прогресс эпика
-
-        System.out.println(manager.getTaskById(1)); //Получение любого таска по айди
-        System.out.println(manager.getTaskById(3));
-        System.out.println(manager.getTaskById(0));
-
-        Epic.ToCreate epic1 = new Epic.ToCreate("New Epic1", "Make epic 1");
-        Subtask.ToCreate subtask3 = new Subtask.ToCreate("New sub1", "Make sub 1", epic1);
-        manager.addTaskEpic(epic1);
-        manager.addTaskSub(subtask3);
-
-        manager.doneSub(5);
-        manager.doneEpic();
-
-        System.out.println(manager.getTaskById(4)); //Получение любого таска по айди
-
-        System.out.println(loadFromFile(filePath));
-        System.out.println(loadedTasks); //проверка на выгруженные данные
-    }
+    public static final Path filePath = Path.of("resources/TaskHistory.csv");
 
     @Override
     public void addTask(ToCreate singleTaskToCreate) {
@@ -118,7 +79,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             listTasks.addAll(super.getAllTasks());
 
             if (br.readLine() == null) {
-                String header = "id,type,name,status,description,epic" + "\n";
+                String header = "id,type,name,status,description,duration,startTime,finishTime,epic" + "\n";
                 bw.write(header);
             }
 
@@ -147,13 +108,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             for (int i = 1; i < lines.length - 2; i++) {
                 Task task = fromString(lines[i]);
-                loadedTasks.put(i - 1, task);
+                fileBackedTasksManager.taskById.put(task.getId(), task);
             }
+
         } catch (IOException e) {
 
             throw new ManagerSaveException("Ошибка загрузки из файла");
         }
-
         return fileBackedTasksManager;
     }
 
@@ -175,22 +136,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         String name = values[2];
         Status status = Status.valueOf(values[3]);
         String description = values[4];
+        Duration duration = Duration.ZERO;
+        LocalDateTime startTime = null;
+        if (LocalDateTime.parse(values[6]) != null) {
+            String dur = values[5].substring(2, values[5].length() - 1);
+            duration = Duration.ofMinutes(Long.parseLong(dur));
+            startTime = LocalDateTime.parse(values[6]);
+        }
 
         if (Type.valueOf(String.valueOf(type)).equals(Type.SUBTASK))
-            epicID = Integer.parseInt(values[5]);
+            epicID = Integer.parseInt(values[8]);
 
         if (Type.valueOf(String.valueOf(type)).equals(Type.SINGLE))
-            return new SingleTask(id, name, description, status);
+            return new SingleTask(id, name, description, status, duration, startTime);
 
         if (Type.valueOf(String.valueOf(type)).equals(Type.EPIC))
             return new Epic(id, name, description, status);
 
         if (Type.valueOf(String.valueOf(type)).equals(Type.SUBTASK))
-            return new Subtask(id, name, description, status, epicID);
+            return new Subtask(id, name, description, status, duration, startTime, epicID);
 
         else
             throw new IllegalArgumentException("Данный формат таска не поддерживается");
 
     }
+
 
 }

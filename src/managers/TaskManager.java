@@ -1,7 +1,8 @@
-package Managers.TaskManager;
-import Tasks.*;
+package managers;
+import tasks.*;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     List<Task> getAllTasks();
@@ -11,9 +12,9 @@ public interface TaskManager {
     void addTaskSub(Subtask.ToCreate subtask);
     List<Subtask> getEpicsSubs(int id);
     void doneSub(int doneId);
-    void doneEpic();
     void doneSingleTask(int doneId);
     void removeAll();
     void removeById(int removeId);
-    void printHistory();
+    List<Task> printHistory();
+    Set<Task> getTasksTree();
 }

@@ -1,72 +1,82 @@
-import Managers.TaskManager.TaskManager;
-import Tasks.*;
-import Managers.*;
-/*
+import managers.FileBackedTasksManager;
+import managers.TaskManager;
+import tasks.*;
+import managers.*;
+
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Main {
 
-    Мейн пока перенесен в FileBackedTasksManager как было сказано в ТЗ!!!
-
-
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
-        SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate("SingleTak1", "Make single");
-        manager.addTask(singleTaskToCreate);
+        TaskManager manager = Managers.getDefaultFileBackedManager();
+        final Path filePath = Path.of("resources/TaskHistory.csv");
 
-        System.out.println(manager.getAllTasks());
+        SingleTask.ToCreate singleTaskToCreate = new SingleTask.ToCreate(
+                "SingleTask1",
+                "Make single",
+                Duration.ofMinutes(20L),
+                LocalDateTime.of(2023, 1, 3, 0, 0)
+        );
+
+        manager.addTask(singleTaskToCreate);
 
         manager.doneSingleTask(0);
 
-        Epic.ToCreate epic = new Epic.ToCreate("New Epic", " ");
-        Subtask.ToCreate subtask1 = new Subtask.ToCreate("New sub1", " ", epic);
-        Subtask.ToCreate subtask2 = new Subtask.ToCreate("New sub2", " ", epic);
+        Epic.ToCreate epic = new Epic.ToCreate("New Epic",
+                "Make epic"
+        );
+
+        Subtask.ToCreate subtask1 = new Subtask.ToCreate("New sub 1",
+                "Make sub 1",
+                Duration.ofMinutes(20L),
+                LocalDateTime.of(2023, 2, 2, 0, 0),
+                epic
+        );
+
+        Subtask.ToCreate subtask2 = new Subtask.ToCreate("New sub 2",
+                "Make sub 2",
+                Duration.ofMinutes(30L),
+                LocalDateTime.of(2023, 2, 2, 1, 0),
+                epic
+        );
+
         manager.addTaskEpic(epic);
         manager.addTaskSub(subtask1);
         manager.addTaskSub(subtask2);
 
-        System.out.println(manager.getAllTasks());
-
         manager.doneSub(2); // Завершение саба
-        manager.doneEpic(); // Проверка на прогресс эпика
-
-        Epic.ToCreate epic1 = new Epic.ToCreate("New Epic1", " ");
-        Subtask.ToCreate subtask3 = new Subtask.ToCreate("New sub1", " ", epic1);
-        manager.addTaskEpic(epic);
-        manager.addTaskSub(subtask3);
-
-        System.out.println(manager.getAllTasks());
-
-        manager.doneSub(5);
-        manager.doneEpic();
-
-        System.out.println(manager.getAllTasks());
-
-        System.out.println(manager.getEpicsSubs(1)); // Получение сабов у определнного эпика
 
         System.out.println(manager.getTaskById(1)); //Получение любого таска по айди
         System.out.println(manager.getTaskById(3));
         System.out.println(manager.getTaskById(0));
-        System.out.println(manager.getTaskById(4));
-        System.out.println(manager.getTaskById(5));
-        System.out.println(manager.getTaskById(0));
-        System.out.println(manager.getTaskById(1));
-        System.out.println(manager.getTaskById(2));
-        System.out.println(manager.getTaskById(3));
-        System.out.println(manager.getTaskById(4));
-        System.out.println(manager.getTaskById(5));
-        System.out.println(manager.getTaskById(0));
 
-        manager.printHistory(); // проверка, чтобы не было повторов
+        Epic.ToCreate epic1 = new Epic.ToCreate("New Epic1",
+                "Make epic 1"
+        );
 
-        manager.removeById(1); //удаление любого таска, если эпик, то вместе с сабами.
+        Subtask.ToCreate subtask3 = new Subtask.ToCreate("New sub1",
+                "Make sub 1",
+                Duration.ofMinutes(20L),
+                LocalDateTime.of(2023, 3, 1, 0, 0),
+                epic1
+        );
 
-        manager.printHistory(); // Проверка удаления истории
+        manager.addTaskEpic(epic1);
+        manager.addTaskSub(subtask3);
 
-        System.out.println(manager.getAllTasks());
+        manager.doneSub(5);
 
-        manager.removeAll(); // Удаление всех тасков из мапы
+        System.out.println(manager.getTaskById(4)); //Получение любого таска по айди
 
+        System.out.println(manager.getTasksTree());
+
+        ((FileBackedTasksManager) manager).loadFromFile(filePath); //Вытаскивание данных из файла
+        System.out.println(manager.getAllTasks()); // Проверка
         manager.printHistory();
+
+
     }
 }
 
- */

@@ -1,5 +1,5 @@
-package Managers.History;
-import Tasks.*;
+package managers.history;
+import tasks.*;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
