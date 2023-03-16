@@ -1,4 +1,4 @@
-package Managers.History;
+package managers.history;
 
 import java.util.*;
 
