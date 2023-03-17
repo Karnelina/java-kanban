@@ -1,4 +1,4 @@
-package managers;
+package managers.taskManager;
 
 import managers.exception.IntersectionException;
 import tasks.*;
@@ -109,9 +109,8 @@ public class InMemoryTaskManager implements TaskManager {
                     subs.add(e);
                 }
             }
-            return subs;
         }
-        return null;
+        return subs;
     }
 
     @Override
@@ -165,13 +164,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
      public void updateTimeOfEpic() {
-        List<Task> subtasks = List.copyOf(epic.getSubs());
-        if (subtasks != null && !subtasks.isEmpty()) {
-            LocalDateTime earlyStartTime = subtasks.get(0).getStartTime();
-            LocalDateTime latestEndTime = subtasks.get(0).getFinishTime();
+        List<Task> epicSubs = List.copyOf(epic.getSubs());
+        if (epicSubs != null && !epicSubs.isEmpty()) {
+            LocalDateTime earlyStartTime = LocalDateTime.MAX;
+            LocalDateTime latestEndTime = LocalDateTime.MIN;
 
             Duration durationSum = Duration.ZERO;
-            for (Task sub : subtasks) {
+            for (Task sub : epicSubs) {
 
                 if (sub.getDuration() != null) {
                     durationSum = durationSum.plus(sub.getDuration());
@@ -219,13 +218,13 @@ public class InMemoryTaskManager implements TaskManager {
 
             if (prioritizedTask.getFinishTime().isBefore(task.getStartTime()) ||
                     task.getFinishTime().isBefore(prioritizedTask.getStartTime())) {
-            } else {
+                continue;
+            }
 
                 throw new IntersectionException("Найдено пересечение между "
                         + task.getId()
                         + " и "
                         + prioritizedTask.getId());
-            }
         }
     }
 

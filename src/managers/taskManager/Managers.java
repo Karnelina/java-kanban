@@ -1,9 +1,10 @@
-package managers;
+package managers.taskManager;
 
 import managers.history.HistoryManager;
 import managers.history.InMemoryHistoryManager;
 
 public class Managers {
+    private Managers() {}
     public static TaskManager getDefault() {
         return new InMemoryTaskManager();
     }

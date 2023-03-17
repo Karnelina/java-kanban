@@ -1,7 +1,6 @@
 package managers.taskManager;
 
 import enums.Status;
-import managers.TaskManager;
 import managers.exception.IntersectionException;
 import org.junit.jupiter.api.Test;
 import tasks.SingleTask;
@@ -159,7 +158,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertNotNull(sub.get(0), "Задачи не возвращаются.");
         assertEquals(1, sub.size(), "Неверное количество задач.");
         assertEquals(1, sub.size(), "Неверное количество задач.");
-        assertNull(taskManager.getEpicsSubs(4), "Задача есть");
     }
 
     @Test

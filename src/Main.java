@@ -1,7 +1,7 @@
-import managers.FileBackedTasksManager;
-import managers.TaskManager;
+import managers.taskManager.FileBackedTasksManager;
+import managers.taskManager.Managers;
+import managers.taskManager.TaskManager;
 import tasks.*;
-import managers.*;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -17,7 +17,7 @@ public class Main {
                 "SingleTask1",
                 "Make single",
                 Duration.ofMinutes(20L),
-                LocalDateTime.of(2023, 1, 3, 0, 0)
+                LocalDateTime.of(2023, 1, 3, 4, 0)
         );
 
         manager.addTask(singleTaskToCreate);
@@ -72,7 +72,7 @@ public class Main {
 
         System.out.println(manager.getTasksTree());
 
-        ((FileBackedTasksManager) manager).loadFromFile(filePath); //Вытаскивание данных из файла
+        FileBackedTasksManager.loadFromFile(filePath); //Вытаскивание данных из файла
         System.out.println(manager.getAllTasks()); // Проверка
         manager.printHistory();
 

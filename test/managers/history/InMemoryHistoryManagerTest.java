@@ -1,13 +1,12 @@
 package managers.history;
 
-import managers.InMemoryTaskManager;
-import managers.TaskManager;
+import managers.taskManager.InMemoryTaskManager;
+import managers.taskManager.TaskManager;
 import tasks.Epic;
 import tasks.SingleTask;
 import tasks.Subtask;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
