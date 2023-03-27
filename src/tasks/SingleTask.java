@@ -12,32 +12,8 @@ public class SingleTask extends Task {
         this.status = status;
     }
 
-    public static class ToCreate {
-        private final String goal;
-        private final String description;
-        private final Duration duration;
-        private final LocalDateTime startTime;
-
-        public ToCreate(String goal, String description, Duration duration, LocalDateTime startTime) {
-            this.goal = goal;
-            this.description = description;
-            this.duration = duration;
-            this.startTime = startTime;
-        }
-
-        public String getGoal() {
-            return goal;
-        }
-        public String getDescription() {
-            return description;
-        }
-        public Duration getDuration() {
-            return duration;
-        }
-
-        public LocalDateTime getStartTime() {
-            return startTime;
-        }
+    public SingleTask(String goal, String description, Duration duration, LocalDateTime startTime) {
+        super(goal, description, duration, startTime);
     }
 
     @Override

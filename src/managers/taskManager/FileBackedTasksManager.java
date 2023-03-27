@@ -16,26 +16,58 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static final Path filePath = Path.of("resources/TaskHistory.csv");
 
     @Override
-    public void addTask(ToCreate singleTaskToCreate) {
+    public void addTask(SingleTask singleTaskToCreate) {
         super.addTask(singleTaskToCreate);
         save();
     }
 
     @Override
-    public void addTaskEpic(Epic.ToCreate newEpic) {
+    public void addTaskEpic(Epic newEpic) {
         super.addTaskEpic(newEpic);
         save();
     }
 
     @Override
-    public void addTaskSub(Subtask.ToCreate subtask) {
+    public void addTaskSub(Subtask subtask) {
         super.addTaskSub(subtask);
         save();
     }
 
     @Override
+    public Map<Integer, SingleTask> getSingleTasks() {
+        Map<Integer, SingleTask> singleTasks = super.getSingleTasks();
+        save();
+
+        return singleHash;
+    }
+
+    @Override
+    public Map<Integer, Epic> getEpicTasks() {
+        Map<Integer, Epic> epicTasks = super.getEpicTasks();
+        save();
+
+        return epicHash;
+    }
+
+    @Override
+    public Map<Integer, Subtask> getSubsTasks() {
+        Map<Integer, Subtask> subTasks = super.getSubsTasks();
+        save();
+
+        return subsHash;
+    }
+
+    @Override
     public List<Task> getAllTasks() {
         List<Task> task = super.getAllTasks();
+        save();
+
+        return task;
+    }
+
+    @Override
+    public Set<Task> getTasksTree() {
+        Set<Task> task = super.getTasksTree();
         save();
 
         return task;
@@ -73,10 +105,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile(), StandardCharsets.UTF_8));
              BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toFile(), StandardCharsets.UTF_8))) {
-            List<Task> listTasks = new ArrayList<>();
+            List<Task> listTasks = new ArrayList<>(getTasksTree());
             List<Task> listHistory = inMemoryHistoryManager.getHistory();
-
-            listTasks.addAll(super.getAllTasks());
 
             if (br.readLine() == null) {
                 String header = "id,type,name,status,description,duration,startTime,finishTime,epic" + "\n";

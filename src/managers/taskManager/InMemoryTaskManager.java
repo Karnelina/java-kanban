@@ -12,47 +12,38 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> taskById = new HashMap<>();
     protected final HashMap<Integer, Epic> epicHash = new HashMap<>();
     protected final HashMap<Integer, Subtask> subsHash = new HashMap<>();
+    protected final HashMap<Integer, SingleTask> singleHash = new HashMap<>();
     protected Set<Task> tasksTree;
     SingleTask singleTask;
     Subtask subtasks;
     Epic epic;
     HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+    int id;
+
+    protected int getNextId() {
+
+        return ++id;
+    }
 
     @Override
     public Task getTaskById(int id) {
-        Task task;
+        Task task = null;
         if (taskById.containsKey(id)) {
             task = taskById.get(id);
             inMemoryHistoryManager.addInHistory(task);
-            return task;
-        }
-        return null;
 
+        }
+        return task;
     }
 
     @Override
     public List<Task> getAllTasks() {
-        List<Task> tasks = new ArrayList<>();
-        for (Task task : taskById.values()) {
-            tasks.add(task);
-        }
+        List<Task> tasks = new ArrayList<>(taskById.values());
         return tasks;
     }
 
-    public static class IdGenerator {
-        private int nextId = 0;
-
-        public int getNextId() {
-
-            return nextId++;
-        }
-    }
-
-    IdGenerator idGenerator = new IdGenerator();
-
     @Override
-    public void addTask(SingleTask.ToCreate singleTaskToCreate) {
-        int id = idGenerator.getNextId();
+    public void addTask(SingleTask singleTaskToCreate) {
 
         singleTask = new SingleTask(
                 id,
@@ -63,16 +54,16 @@ public class InMemoryTaskManager implements TaskManager {
                 singleTaskToCreate.getStartTime()
         );
 
+        singleHash.put(singleTask.getId(), singleTask);
         taskById.put(singleTask.getId(), singleTask);
     }
 
     @Override
-    public void addTaskEpic(Epic.ToCreate newEpic) {
-        int id = idGenerator.getNextId();
+    public void addTaskEpic(Epic newEpic) {
 
         epic = new Epic(
                 id,
-                newEpic.getGoalToEpic(),
+                newEpic.getGoal(),
                 newEpic.getDescription(),
                 Status.NEW
         );
@@ -81,12 +72,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTaskSub(Subtask.ToCreate subtask) {
-        int id = idGenerator.getNextId();
+    public void addTaskSub(Subtask subtask) {
 
         subtasks = new Subtask(
                 id,
-                subtask.getGoalToSub(),
+                subtask.getGoal(),
                 subtask.getDescription(),
                 Status.NEW,
                 subtask.getDuration(),
@@ -111,6 +101,21 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return subs;
+    }
+
+    @Override
+    public Map<Integer, Epic> getEpicTasks() {
+        return epicHash;
+    }
+
+    @Override
+    public Map<Integer, Subtask> getSubsTasks() {
+        return subsHash;
+    }
+
+    @Override
+    public Map<Integer, SingleTask> getSingleTasks() {
+        return singleHash;
     }
 
     @Override

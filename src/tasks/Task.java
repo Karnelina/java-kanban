@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 
 
 public abstract class Task {
-    private final int id;
+    private int id;
     private final String goal;
     private final String description;
-    private Duration duration = null;
-    private LocalDateTime startTime = null;
-    private LocalDateTime finishTime = null;
+    private Duration duration;
+    private LocalDateTime startTime;
+    private LocalDateTime finishTime;
 
     protected Task(int id, String goal, String description, Duration duration, LocalDateTime startTime) {
         this.id = id;
@@ -24,6 +24,18 @@ public abstract class Task {
 
     protected Task(int id, String goal, String description) {
         this.id = id;
+        this.goal = goal;
+        this.description = description;
+    }
+
+    public Task(String goal, String description, Duration duration, LocalDateTime startTime) {
+        this.goal = goal;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String goal, String description) {
         this.goal = goal;
         this.description = description;
     }

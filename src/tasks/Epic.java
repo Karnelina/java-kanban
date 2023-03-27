@@ -6,12 +6,16 @@ import java.util.*;
 
 public class Epic extends Task {
     private Status status;
-    private final ArrayList<Subtask> subs;
+    private ArrayList<Subtask> subs;
 
     public Epic(int id, String goal, String description, Status status) {
         super(id, goal, description);
         this.status = status;
         subs = new ArrayList<>();
+    }
+
+    public Epic(String goal, String description) {
+        super(goal, description);
     }
 
     public ArrayList<Subtask> getSubs() {
@@ -20,24 +24,6 @@ public class Epic extends Task {
 
     public void setSub(Subtask subs) {
         this.subs.add(subs);
-    }
-
-    public static class ToCreate {
-        private final String goal;
-        private final String description;
-
-        public ToCreate(String goal, String description) {
-            this.goal = goal;
-            this.description = description;
-        }
-
-        public String getGoalToEpic() {
-            return goal;
-        }
-
-        public String getDescription() {
-            return description;
-        }
     }
 
     @Override

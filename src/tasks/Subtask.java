@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 
 public class Subtask extends Task {
     private Status status;
-    private final int epicId;
+    private int epicId;
+    private Epic parentTask;
 
     public Subtask(int id, String goal, String description, Status status, Duration duration, LocalDateTime startTime, int epicId) {
         super(id, goal, description, duration, startTime);
@@ -14,33 +15,9 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public static class ToCreate {
-        private final String goal;
-        private final String description;
-        private final Epic.ToCreate parrentTask;
-        private final Duration duration;
-        private final LocalDateTime startTime;
-
-        public ToCreate(String goal, String description, Duration duration, LocalDateTime startTime, Epic.ToCreate parentTask) {
-            this.goal = goal;
-            this.parrentTask = parentTask;
-            this.description = description;
-            this.duration = duration;
-            this.startTime = startTime;
-        }
-
-        public String getGoalToSub() {
-            return goal;
-        }
-        public String getDescription() {
-            return description;
-        }
-        public Duration getDuration() {
-            return duration;
-        }
-        public LocalDateTime getStartTime() {
-            return startTime;
-        }
+    public Subtask(String goal, String description, Duration duration, LocalDateTime startTime, Epic parentTask) {
+        super(goal, description, duration, startTime);
+        this.parentTask = parentTask;
     }
 
     public int getEpicId() {

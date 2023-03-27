@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
-    protected SingleTask.ToCreate singleTaskToCreate;
-    protected Epic.ToCreate epic;
-    protected Subtask.ToCreate subtask1;
-    protected Subtask.ToCreate subtask2;
-    protected SingleTask.ToCreate singleSameSub1;
+    protected SingleTask singleTaskToCreate;
+    protected Epic epic;
+    protected Subtask subtask1;
+    protected Subtask subtask2;
+    protected SingleTask singleSameSub1;
 
     @Test
     void addTaskTest() {

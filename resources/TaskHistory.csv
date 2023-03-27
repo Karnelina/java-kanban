@@ -1,6 +1,0 @@
-id,type,name,status,description,duration,startTime,finishTime,epic
-0,SINGLE,SingleTask1,NEW,Make single,PT20M,2023-01-03T00:00,2023-01-03T00:20
-1,EPIC,New Epic,NEW,Make epic,PT20M,2023-02-02T00:00,2023-02-02T00:20
-2,SUBTASK,New sub 1,NEW,Make sub 1,PT20M,2023-02-02T00:00,2023-02-02T00:20,1
-
-0,1,
