@@ -19,7 +19,7 @@ public class HttpTasksManagerTest extends TaskManagerTest<HttpTaskManager> {
     protected KVServer server;
 
     @BeforeEach
-    public void loadInitialConditions() throws IOException {
+    public void init() throws IOException {
         singleTaskToCreate = new SingleTask(
                 "SingleTask1",
                 "Make single",
@@ -53,8 +53,9 @@ public class HttpTasksManagerTest extends TaskManagerTest<HttpTaskManager> {
         );
 
         server = new KVServer();
-        taskManager = new HttpTaskManager();
         server.start();
+
+        taskManager = new HttpTaskManager();
 
     }
 

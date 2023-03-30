@@ -3,11 +3,11 @@ import enums.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Subtask extends Task {
     private Status status;
-    private int epicId;
-    private Epic parentTask;
+    private final int epicId;
 
     public Subtask(int id, String goal, String description, Status status, Duration duration, LocalDateTime startTime, int epicId) {
         super(id, goal, description, duration, startTime);
@@ -17,7 +17,7 @@ public class Subtask extends Task {
 
     public Subtask(String goal, String description, Duration duration, LocalDateTime startTime, Epic parentTask) {
         super(goal, description, duration, startTime);
-        this.parentTask = parentTask;
+        this.epicId = parentTask.getId();
     }
 
     public int getEpicId() {
@@ -63,7 +63,7 @@ public class Subtask extends Task {
         if (obj == null && (task.getType().equals(Type.EPIC) || task.getType().equals(Type.SINGLE))) {
             return false;
         }
-        return getId() == task.getId() &&
+        return Objects.equals(getId(), task.getId()) &&
                 getType() == task.getType() &&
                 getGoal().equals(task.getGoal()) &&
                 getStatus() == task.getStatus() &&

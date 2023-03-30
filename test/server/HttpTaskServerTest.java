@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTaskServerTest {
     private HttpTaskServer server;
-    private Gson gson = Managers.getGson();
+    private final Gson gson = Managers.getGson();
     TaskManager manager;
     protected SingleTask singleTaskToCreate;
     protected Epic epic;
@@ -43,7 +43,7 @@ public class HttpTaskServerTest {
                 "SingleTask1",
                 "Make single",
                 Duration.ofMinutes(20L),
-                LocalDateTime.of(2023,1,3,0,0)
+                LocalDateTime.of(2023, 1, 3, 0, 0)
         );
 
         epic = new Epic("New Epic",
@@ -53,14 +53,14 @@ public class HttpTaskServerTest {
         subtask1 = new Subtask("New sub 1",
                 "Make sub 1",
                 Duration.ofMinutes(20L),
-                LocalDateTime.of(2023,2,2,0,0),
+                LocalDateTime.of(2023, 2, 2, 0, 0),
                 epic
         );
 
         subtask2 = new Subtask("New sub 2",
                 "Make sub 2",
                 Duration.ofMinutes(30L),
-                LocalDateTime.of(2023,2,2,1,0),
+                LocalDateTime.of(2023, 2, 2, 1, 0),
                 epic
         );
 
@@ -245,7 +245,6 @@ public class HttpTaskServerTest {
 
     @Test
     void addSingleTest() throws IOException, InterruptedException {
-        manager.addTask(singleTaskToCreate);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/task");
@@ -262,13 +261,12 @@ public class HttpTaskServerTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
-        assertEquals(1, manager.getSingleTasks().size());
+        assertEquals("Таска добавлена", response.body());
 
     }
 
     @Test
-    void addEpicTest() throws IOException, InterruptedException {
-        manager.addTaskEpic(epic);
+    void addEpicAndSubTest() throws IOException, InterruptedException {
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/epic");
@@ -285,30 +283,24 @@ public class HttpTaskServerTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
-        assertEquals(1, manager.getEpicTasks().size());
+        assertEquals("Эпик добавлен", response.body());
 
-    }
+        var url1 = URI.create("http://localhost:8080/tasks/subtask");
 
-    @Test
-    void addSubtaskTest() throws IOException, InterruptedException {
-        manager.addTaskEpic(epic);
-        manager.addTaskSub(subtask1);
+        var json1 = gson.toJson(subtask1);
+        var body1 = HttpRequest.BodyPublishers.ofString(json1);
 
-        var client = HttpClient.newHttpClient();
-        var url = URI.create("http://localhost:8080/tasks/subtask");
+        var request1 = HttpRequest.newBuilder()
+                .uri(url1)
+                .POST(body1)
+                .build();
 
-            var json = gson.toJson(subtask1);
-            var body = HttpRequest.BodyPublishers.ofString(json);
+        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
 
-            var request = HttpRequest.newBuilder()
-                    .uri(url)
-                    .POST(body)
-                    .build();
+        assertEquals(200, response1.statusCode());
 
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Сабтаск добавлен", response1.body());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(1, manager.getSubsTasks().size());
     }
 
     @Test

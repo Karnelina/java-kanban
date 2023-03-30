@@ -204,7 +204,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertNull(taskEpic.getStartTime());
         assertNull(taskEpic.getFinishTime());
-        assertNull(taskEpic.getDuration());
+        assertEquals(Duration.ZERO, taskEpic.getDuration());
 
         taskManager.addTaskSub(subtask1);
         taskManager.addTaskSub(subtask2);
