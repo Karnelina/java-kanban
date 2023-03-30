@@ -1,4 +1,5 @@
 import managers.server.KVServer;
+import managers.taskManager.HttpTaskManager;
 import managers.taskManager.Managers;
 import tasks.*;
 
@@ -42,24 +43,22 @@ public class Main {
                 epic
         );
 
-        Subtask subtask2 = new Subtask("New sub 2",
+        /*Subtask subtask2 = new Subtask("New sub 2",
                 "Make sub 2",
                 Duration.ofMinutes(30L),
                 LocalDateTime.of(2023, 2, 2, 1, 0),
                 epic
-        );
+        );*/
 
         manager.addTaskEpic(epic);
         manager.addTaskSub(subtask1);
-        manager.addTaskSub(subtask2);
+        //manager.addTaskSub(subtask2);
 
-        manager.doneSub(2); // Завершение саба
-
+        //manager.doneSub(2); // Завершение саба
         System.out.println(manager.getTaskById(1)); //Получение любого таска по айди
-        System.out.println(manager.getTaskById(3));
         System.out.println(manager.getTaskById(0));
 
-        Epic epic1 = new Epic("New Epic1",
+        /*Epic epic1 = new Epic("New Epic1",
                 "Make epic 1"
         );
 
@@ -75,12 +74,15 @@ public class Main {
 
         manager.doneSub(5);
 
-        System.out.println(manager.getTaskById(4)); //Получение любого таска по айди
+        System.out.println(manager.getTaskById(4)); //Получение любого таска по айди*/
 
 
+        var newManager = new HttpTaskManager();
 
-        System.out.println(manager.getTasksTree());
+        newManager.load();
 
+        System.out.println(newManager.getTasksTree());
+        System.out.println(newManager.printHistory());
 
 
     }

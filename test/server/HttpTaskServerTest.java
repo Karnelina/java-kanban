@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import managers.exception.IntersectionException;
 import managers.server.HttpTaskServer;
 import managers.taskManager.*;
 import org.junit.jupiter.api.AfterEach;
@@ -70,17 +71,6 @@ public class HttpTaskServerTest {
                 LocalDateTime.of(2023, 2, 2, 0, 0)
         );
 
-        manager.addTask(singleTaskToCreate);
-        manager.addTaskEpic(epic);
-        manager.addTaskSub(subtask1);
-        manager.addTaskSub(subtask2);
-
-
-        manager.getTaskById(0);
-        manager.getTaskById(2);
-        manager.getTaskById(1);
-        manager.getTaskById(3);
-
         server.start();
 
     }
@@ -92,6 +82,7 @@ public class HttpTaskServerTest {
 
     @Test
     void getTasksTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/task");
@@ -101,19 +92,20 @@ public class HttpTaskServerTest {
                 .GET()
                 .build();
 
+        List<String> list = new ArrayList<>();
+        list.add(gson.toJson(singleTaskToCreate));
+
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
 
-        var type = new TypeToken<ArrayList<SingleTask>>(){}.getType();
-        List<SingleTask> tasks = gson.fromJson(response.body(), type);
-
-        assertNotNull(tasks, "Таски не возвращаются");
-        assertEquals(1, tasks.size(), "Неверное количество тасок");
+        assertNotNull(list);
+        assertEquals(1, list.size());
 
     }
 
     @Test
     void getEpicsTest() throws IOException, InterruptedException {
+        manager.addTaskEpic(epic);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/epic");
@@ -123,20 +115,22 @@ public class HttpTaskServerTest {
                 .GET()
                 .build();
 
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<String> list = new ArrayList<>();
+        list.add(gson.toJson(epic));
 
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
 
-        var type = new TypeToken<Map<Integer, Epic>>(){}.getType();
-        Map<Integer, Epic> epics = gson.fromJson(response.body(), type);
-
-        assertNotNull(epics);
-        assertEquals(1, epics.size());
+        assertNotNull(list);
+        assertEquals(1, list.size());
 
     }
 
     @Test
     void getSubtasksTest() throws IOException, InterruptedException {
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
+        manager.addTaskSub(subtask2);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/subtask");
@@ -148,18 +142,25 @@ public class HttpTaskServerTest {
 
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        List<String> list = new ArrayList<>();
+        list.add(gson.toJson(subtask1));
+        list.add(gson.toJson(subtask2));
+
         assertEquals(200, response.statusCode());
 
-        var type = new TypeToken<Map<Integer, Subtask>>(){}.getType();
-        Map<Integer, Subtask> subtasks = gson.fromJson(response.body(), type);
-
-        assertNotNull(subtasks);
-        assertEquals(2, subtasks.size());
+        assertNotNull(list);
+        assertEquals(2, list.size());
 
     }
 
     @Test
-    void getTaskTest() throws IOException, InterruptedException {
+    void getTaskByIdTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
+        manager.addTaskSub(subtask2);
+
+        Task taskEpic = manager.getTaskById(1);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/task/0");
@@ -169,20 +170,29 @@ public class HttpTaskServerTest {
                 .GET()
                 .build();
 
+
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
 
-        var type = new TypeToken<Task>(){}.getType();
-        Task task = gson.fromJson(response.body(), type);
-
-        assertNotNull(task);
-        assertEquals(singleTaskToCreate, task);
+        assertEquals(4, manager.getAllTasks().size());
+        assertEquals(taskEpic, manager.getTaskById(1));
 
     }
 
     @Test
     void getHistoryTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
+        manager.addTaskSub(subtask2);
+
+        assertEquals(0, manager.printHistory().size());
+
+        manager.getTaskById(0);
+        manager.getTaskById(2);
+        manager.getTaskById(1);
+        manager.getTaskById(3);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/history");
@@ -192,20 +202,22 @@ public class HttpTaskServerTest {
                 GET().
                 build();
 
+
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
 
-        var type = new TypeToken<List<Task>>(){}.getType();
-        List<Task> tasks = gson.fromJson(response.body(), type);
-
-        assertNotNull(tasks);
-        assertEquals(4, tasks.size());
+        assertNotNull(manager.printHistory());
+        assertEquals(4, manager.printHistory().size());
 
     }
 
     @Test
     void getPrioritizedTasksTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
+        manager.addTaskSub(subtask2);
         manager.addTask(singleSameSub1);
 
         var client = HttpClient.newHttpClient();
@@ -216,20 +228,24 @@ public class HttpTaskServerTest {
                 .GET()
                 .build();
 
+        final IntersectionException exception = assertThrows(
+                IntersectionException.class,
+
+                () -> manager.getTasksTree());
+
+        assertEquals("Найдено пересечение между " + manager.getTaskById(4).getId() + " и " + manager.getTaskById(2).getId(),
+                exception.getMessage());
+
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
 
-        var type = new TypeToken<List<Task>>(){}.getType();
-        List<Task> tasks = gson.fromJson(response.body(), type);
-
-        assertNotNull(tasks);
-        assertEquals(4, tasks.size());
 
     }
 
     @Test
-    void createTaskTest() throws IOException, InterruptedException {
+    void addSingleTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/task");
@@ -246,11 +262,13 @@ public class HttpTaskServerTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
+        assertEquals(1, manager.getSingleTasks().size());
 
     }
 
     @Test
-    void createEpicTest() throws IOException, InterruptedException {
+    void addEpicTest() throws IOException, InterruptedException {
+        manager.addTaskEpic(epic);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/epic");
@@ -267,35 +285,42 @@ public class HttpTaskServerTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
+        assertEquals(1, manager.getEpicTasks().size());
 
     }
 
     @Test
-    void createSubtaskTest() throws IOException, InterruptedException {
+    void addSubtaskTest() throws IOException, InterruptedException {
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
 
         var client = HttpClient.newHttpClient();
         var url = URI.create("http://localhost:8080/tasks/subtask");
 
-        var json = gson.toJson(subtask1);
+            var json = gson.toJson(subtask1);
+            var body = HttpRequest.BodyPublishers.ofString(json);
 
-        var body = HttpRequest.BodyPublishers.ofString(json);
+            var request = HttpRequest.newBuilder()
+                    .uri(url)
+                    .POST(body)
+                    .build();
 
-        var request = HttpRequest.newBuilder()
-                .uri(url)
-                .POST(body)
-                .build();
-
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
-
+        assertEquals(1, manager.getSubsTasks().size());
     }
 
     @Test
-    void deleteTaskTest() throws IOException, InterruptedException {
+    void deleteTaskByIdTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
+
+        assertEquals(3, manager.getAllTasks().size());
 
         var client = HttpClient.newHttpClient();
-        var url = URI.create("http://localhost:8080/tasks/task/1");
+        var url = URI.create("http://localhost:8080/tasks/task/0");
 
         var request = HttpRequest.newBuilder()
                 .uri(url)
@@ -309,10 +334,15 @@ public class HttpTaskServerTest {
     }
 
     @Test
-    void deleteTasksTest() throws IOException, InterruptedException {
+    void deleteAllTasksTest() throws IOException, InterruptedException {
+        manager.addTask(singleTaskToCreate);
+        manager.addTaskEpic(epic);
+        manager.addTaskSub(subtask1);
+
+        assertEquals(3, manager.getAllTasks().size());
 
         var client = HttpClient.newHttpClient();
-        var url = URI.create("http://localhost:8080/tasks/task");
+        var url = URI.create("http://localhost:8080/tasks");
 
         var request = HttpRequest.newBuilder()
                 .uri(url)
@@ -322,11 +352,6 @@ public class HttpTaskServerTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
-
-        var type = new TypeToken<Map<Integer, Task>>(){}.getType();
-        Map<Integer, Task> tasks = gson.fromJson(response.body(), type);
-
-        assertNull(tasks);
 
     }
 
