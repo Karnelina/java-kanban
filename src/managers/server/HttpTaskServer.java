@@ -67,31 +67,31 @@ public class HttpTaskServer {
                     case "GET": {
                         if (Pattern.matches(regexRoots.get(0), path)) {
                             getPrioritizedTasks();
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(1), path)) {
                             getTasks();
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(2), path)) {
                             getEpics();
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(3), path)) {
                             getSubtasks();
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(4), path)) {
-                            String pathId = path.replaceFirst("/tasks/task/", "");
+                            String pathId = path.replaceFirst(regexRoots.get(1) + "/", "");
                             int id = parsePathId(pathId);
                             getTasksByID(id);
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(6), path)) {
                             String pathId = path.replaceFirst("/tasks/update/", "");
                             int id = parsePathId(pathId);
                             updateTask(id);
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(5), path))
                             getHistory();
@@ -100,11 +100,11 @@ public class HttpTaskServer {
                     case "POST": {
                         if (Pattern.matches(regexRoots.get(1), path)) {
                             addTask();
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(2), path)) {
                             addEpicTask();
-                            return;
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(3), path))
                             addSubTask();
@@ -112,24 +112,14 @@ public class HttpTaskServer {
                     }
                     case "DELETE": {
                         if (Pattern.matches(regexRoots.get(4), path)) {
-                            System.out.println("DELETE: началась обработка removeById");
                             String pathId = path.replaceFirst("/tasks/task/", "");
                             int id = parsePathId(pathId);
-                            if (manager.getAllTasks().size() >= id) {
-                                manager.removeById(id);
-                                responseString = "Удалена таска id = " + id;
-                                responseCode = 200;
-                            } else {
-                                responseString = "Получен некорректный id= " + pathId;
-                                responseCode = 405;
-                            }
-                            return;
+                            removeTaskById(id);
+
+                            break;
                         }
                         if (Pattern.matches(regexRoots.get(0), path)) {
-                            System.out.println("DELETE: началась обработка removeAll");
-                            manager.removeAll();
-                            responseString = "Удалены все таски";
-                            responseCode = 200;
+                            removeAllTasks();
                         }
                         break;
                     }
@@ -299,6 +289,26 @@ public class HttpTaskServer {
                 responseCode = 404;
                 responseString = "Ошибка получения истории";
             }
+        }
+
+        private void removeTaskById(int id) {
+            System.out.println("DELETE: началась обработка removeById");
+
+            if (manager.getAllTasks().size() <= id) {
+                manager.removeById(id);
+                responseString = "Удалена таска id = " + id;
+                responseCode = 200;
+            } else {
+                responseString = "Получен некорректный id= " + id;
+                responseCode = 405;
+            }
+        }
+
+        private void removeAllTasks() {
+            System.out.println("DELETE: началась обработка removeAll");
+            manager.removeAll();
+            responseString = "Удалены все таски";
+            responseCode = 200;
         }
 
         private int parsePathId(String path) {

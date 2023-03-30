@@ -18,19 +18,14 @@ public class InMemoryTaskManager implements TaskManager {
     Subtask subtasks;
     Epic epic;
     HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
-    int id;
-
-    protected int getNextId() {
-
-        return ++id;
-    }
+    int id = 0;
 
     @Override
     public Task getTaskById(int id) {
         Task task = null;
         if (taskById.containsKey(id)) {
             task = taskById.get(id);
-            inMemoryHistoryManager.addInHistory(task);
+            inMemoryHistoryManager.addInHistory(task.getId());
 
         }
         return task;
@@ -45,6 +40,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addTask(SingleTask singleTaskToCreate) {
 
+
         singleTask = new SingleTask(
                 id,
                 singleTaskToCreate.getGoal(),
@@ -56,6 +52,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         singleHash.put(singleTask.getId(), singleTask);
         taskById.put(singleTask.getId(), singleTask);
+        id++;
     }
 
     @Override
@@ -69,6 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
         );
         epicHash.put(epic.getId(), epic);
         taskById.put(epic.getId(), epic);
+        id++;
     }
 
     @Override
@@ -82,12 +80,12 @@ public class InMemoryTaskManager implements TaskManager {
                 subtask.getDuration(),
                 subtask.getStartTime(),
                 epic.getId()
-
         );
         epic.setSub(subtasks);
         subsHash.put(subtasks.getId(), subtasks);
         taskById.put(subtasks.getId(), subtasks);
         updateTimeOfEpic();
+        id++;
     }
 
     @Override
@@ -288,7 +286,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> printHistory() {
+    public List<Integer> printHistory() {
         return inMemoryHistoryManager.getHistory();
     }
 

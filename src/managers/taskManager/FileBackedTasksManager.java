@@ -10,8 +10,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static tasks.SingleTask.*;
-
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     public static final Path filePath = Path.of("resources/TaskHistory.csv");
 
@@ -31,30 +29,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public void addTaskSub(Subtask subtask) {
         super.addTaskSub(subtask);
         save();
-    }
-
-    @Override
-    public Map<Integer, SingleTask> getSingleTasks() {
-        Map<Integer, SingleTask> singleTasks = super.getSingleTasks();
-        save();
-
-        return singleHash;
-    }
-
-    @Override
-    public Map<Integer, Epic> getEpicTasks() {
-        Map<Integer, Epic> epicTasks = super.getEpicTasks();
-        save();
-
-        return epicHash;
-    }
-
-    @Override
-    public Map<Integer, Subtask> getSubsTasks() {
-        Map<Integer, Subtask> subTasks = super.getSubsTasks();
-        save();
-
-        return subsHash;
     }
 
     @Override
@@ -106,7 +80,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile(), StandardCharsets.UTF_8));
              BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toFile(), StandardCharsets.UTF_8))) {
             List<Task> listTasks = new ArrayList<>(getTasksTree());
-            List<Task> listHistory = inMemoryHistoryManager.getHistory();
+            List<Integer> listHistory = inMemoryHistoryManager.getHistory();
 
             if (br.readLine() == null) {
                 String header = "id,type,name,status,description,duration,startTime,finishTime,epic" + "\n";
@@ -148,11 +122,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return fileBackedTasksManager;
     }
 
-    public static String historyIdsToString(List<Task> manager) {
+    public static String historyIdsToString(List<Integer> manager) {
         StringBuilder sb = new StringBuilder();
 
-        for (Task task : manager) {
-            sb.append(task.getId()).append(",");
+        for (Integer task : manager) {
+            sb.append(task).append(",");
         }
         return sb.toString();
     }

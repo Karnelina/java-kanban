@@ -19,7 +19,7 @@ public interface TaskManager {
     void doneSingleTask(int doneId);
     void removeAll();
     void removeById(int removeId);
-    List<Task> printHistory();
+    List<Integer> printHistory();
     Set<Task> getTasksTree();
 
 }

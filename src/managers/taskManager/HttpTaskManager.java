@@ -27,62 +27,56 @@ public class HttpTaskManager extends FileBackedTasksManager {
     @Override
     public void save() {
 
-        var tasks = gson.toJson(getSingleTasks());
+        var tasks = gson.toJson(singleHash.values());
         client.save("tasks/task", tasks);
 
-        var epics = gson.toJson(getEpicTasks());
+        var epics = gson.toJson(epicHash.values());
         client.save("tasks/epic", epics);
 
-        var subtasks = gson.toJson(getSubsTasks());
+        var subtasks = gson.toJson(subsHash.values());
         client.save("tasks/subtask", subtasks);
-
-        var prioritizedTasks = gson.toJson(getTasksTree());
-        client.save("tasks", prioritizedTasks);
 
         var history = gson.toJson(printHistory());
         client.save("tasks/history", history);
-    }
 
-    @Override
-    public Task getTaskById(int id) {
-        Task task = super.getTaskById(id);
-        String tasks = gson.toJson(task);
-        client.save("tasks/task/\\d+$", tasks);
-
-        return task;
     }
 
     public void load() {
 
-        var jsonPrioritizedTasks = getClient().load("tasks");
-        var prioritizedTaskType = new TypeToken<List<Task>>() {
-        }.getType();
-        List<Task> priorityTasks = gson.fromJson(jsonPrioritizedTasks, prioritizedTaskType);
-        getTasksTree().addAll(priorityTasks);
-
-
-        var gsonHistory = getClient().load("tasks/history");
-        var historyType = new TypeToken<List<Task>>(){}.getType();
-        List<Task> history = gson.fromJson(gsonHistory, historyType);
-        printHistory().addAll(history);
-
-
         var jsonTasks = getClient().load("tasks/task");
-        var taskType = new TypeToken<Map<Integer, SingleTask>>(){}.getType();
-        Map<Integer, SingleTask> tasks = gson.fromJson(jsonTasks, taskType);
-        getSingleTasks().putAll(tasks);
-
+        var taskType = new TypeToken<List<SingleTask>>() {
+        }.getType();
+        List<SingleTask> tasks = gson.fromJson(jsonTasks, taskType);
+        for (SingleTask task : tasks) {
+            singleHash.put(task.getId(), task);
+            taskById.put(task.getId(), task);
+        }
 
         var jsonEpics = getClient().load("tasks/epic");
-        var epicType = new TypeToken<Map<Integer, Epic>>(){}.getType();
-        Map<Integer, Epic> epics = gson.fromJson(jsonEpics, epicType);
-        getEpicTasks().putAll(epics);
-
+        var epicType = new TypeToken<List<Epic>>() {
+        }.getType();
+        List<Epic> epics = gson.fromJson(jsonEpics, epicType);
+        for (Epic task : epics) {
+            epicHash.put(task.getId(), task);
+            taskById.put(task.getId(), task);
+        }
 
         var jsonSubtasks = getClient().load("tasks/subtask");
-        var subtaskType = new TypeToken<Map<Integer, Subtask>>(){}.getType();
-        Map<Integer, Subtask> subtasks = gson.fromJson(jsonSubtasks, subtaskType);
-        getSubsTasks().putAll(subtasks);
+        var subtaskType = new TypeToken<List<Subtask>>() {
+        }.getType();
+        List<Subtask> subtasks = gson.fromJson(jsonSubtasks, subtaskType);
+        for (Subtask task : subtasks) {
+            subsHash.put(task.getId(), task);
+            taskById.put(task.getId(), task);
+        }
+
+        var gsonHistory = getClient().load("tasks/history");
+        var historyType = new TypeToken<List<Integer>>() {
+        }.getType();
+        List<Integer> history = gson.fromJson(gsonHistory, historyType);
+        for (int id : history) {
+            inMemoryHistoryManager.addInHistory(id);
+        }
 
     }
 

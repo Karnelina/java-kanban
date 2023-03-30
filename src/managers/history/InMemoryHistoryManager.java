@@ -4,32 +4,32 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final CustomLinkedList historyList;
-    private final Map<Integer, Node<Task>> history;
+    protected final List<Node<Integer>> history;
 
     public InMemoryHistoryManager() {
         historyList = new CustomLinkedList();
-        history = new HashMap<>();
+        history = new ArrayList<Node<Integer>>();
     }
 
     @Override
-    public void addInHistory(Task task) {
-        Node<Task> node = historyList.linkLast(task);
+    public void addInHistory(int id) {
+        Node<Integer> node = historyList.linkLast(id);
 
-        if (history.containsKey(task.getId())) {
-            historyList.removeNode(history.get(task.getId()));
+        if (history.contains(id)) {
+            historyList.removeNode(history.get(id));
         }
 
-        history.put(task.getId(), node);
+        history.add(node);
     }
 
     @Override
-    public List<Task> getHistory() {
+    public List<Integer> getHistory() {
         return historyList.getTasks();
     }
 
     @Override
     public void remove(int id) {
-        if (history.containsKey(id)) {
+        if (history.contains(id)) {
             historyList.removeNode(history.get(id));
             history.remove(id);
         }
