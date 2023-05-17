@@ -1,4 +1,6 @@
 # java-kanban
+Технологии: Java (no frameworks) + JUnit + GSON + RESTful API
+
 Трекер задач. Программа, отвечающая за формирование модели данных для этой страницы:
 ![img.png](img.png)
 
